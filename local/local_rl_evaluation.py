@@ -1,11 +1,18 @@
 import numpy as np
 import time
-import json
+from tensorflow.keras.optimizers import Adam
+from agents.dqn_agent import BasicQLearningAgent
+import numpy as np
+from stable_baselines3.ppo import CnnPolicy
+from stable_baselines3 import PPO
+from citylearn.citylearn import CityLearnEnv
+import supersuit as ss
+from pettingzoo.utils.conversions import aec_to_parallel
+from stable_baselines3.common import env_checker
+from pettingzoo.test import api_test
+
 """
-Please do not make changes to this file. 
-This is only a reference script provided to allow you 
-to do local evaluation. The evaluator **DOES NOT** 
-use this script for orchestrating the evaluations. 
+Local Evaluation for Deep RL models. 
 """
 
 from agents.orderenforcingwrapper import OrderEnforcingAgent
@@ -14,13 +21,6 @@ from citylearn.citylearn import CityLearnEnv
 class Constants:
     episodes = 3
     schema_path = './data/citylearn_challenge_2022_phase_1/schema.json'
-    with open(schema_path, 'r') as fp:
-        file = json.load(fp)
-
-
-def active_observations_to_dict(file):
-    active = [i for i,j in file['observations'].items() for k,v in j.items() if v == True and k == 'active']
-    return dict(enumerate(active))
 
 def action_space_to_dict(aspace):
     """ Only for box space """
@@ -38,13 +38,63 @@ def env_reset(env):
                 "observation": observations }
     return obs_dict
 
+
+
+def train_and_evaluate():
+    print("Starting local training and evaluation")
+    env = CityLearnEnv(schema=Constants.schema_path)
+
+    # TODO: Add Deep Q Agent here
+    #agent = OrderEnforcingAgent()
+
+    # agent = BasicQLearningAgent()
+
+
+    # actions = ("cooling_storage", "heating_storage", "dhw_storage", "electrical_storage")
+    
+    model = PPO('MlpPolicy', env, learning_rate=0.001)
+
+    model.learn(total_timesteps=2000000)
+    model.save(f'data/models/{model_name}')
+
+
+
+    # states = np.array(env.observation_space) # 28 active actions
+
+    # print(states.shape)
+
+    # print("--- Building Model ---")
+    # model = agent.build_model(states, actions)
+    # print(model.summary())
+    # print("--- Building Agent ---")
+    # dqn = agent.build_agent(model, actions)
+    # print("--- Compiling DQN ---")
+    # dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+    # print("--- Fitting DQN ---")
+
+    # dqn.fit(env, nb_steps=50000, visualize=False, verbose=1)
+
+    # dqn.save_weights('dqn_weights.h5f', overwrite=True)
+
+    
+    # model = agent.build_model(n_states, n_actions)
+    # dqn = agent.build_agent(model, n_actions)
+    # dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+
+    # dqn.load_weights('dqn_weights.h5f')
+    # _ = dqn.test(env, nb_episodes=5, visualize=False)
+
+
+
+
+
 def evaluate():
     print("Starting local evaluation")
     
     env = CityLearnEnv(schema=Constants.schema_path)
     agent = OrderEnforcingAgent()
 
-    obs_dict = env_reset(env)
+    obs_dict = env_reset(env) # {action_space; observation_space}
 
     agent_time_elapsed = 0
 
@@ -58,14 +108,7 @@ def evaluate():
     episode_metrics = []
     try:
         while True:
-            observations, reward, done, info = env.step(actions)
-            print(f"----------- {num_steps} actions ----------------")
-            print(actions)
-            print(f"------------------------------------------------")
-            #if info:
-            # if num_steps == 1:
-            #     print(len(reward))
-            #     break
+            observations, _, done, _ = env.step(actions)
             if done:
                 episodes_completed += 1
                 metrics_t = env.evaluate()
@@ -105,4 +148,5 @@ def evaluate():
     
 
 if __name__ == '__main__':
-    evaluate()
+    #evaluate()
+    train_and_evaluate()
