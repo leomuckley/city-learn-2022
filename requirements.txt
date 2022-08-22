@@ -1,1 +1,2 @@
 git+https://github.com/intelligent-environments-lab/CityLearn.git@v1.2.0
+torch==12.1.1

@@ -40,10 +40,6 @@ def env_reset(env):
                 "observation": observations }
     return obs_dict
 
-env = CityLearnEnv(schema=Constants.schema_path)
-obs_dict = env_reset(env)
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class DDPG:
@@ -240,6 +236,13 @@ def train_ddpg(
 
 
 if __name__ == "__main__":
+    env = CityLearnEnv(schema=Constants.schema_path)
+    obs_dict = env_reset(env)
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Utilizing {device} for training")
+
     ddpg_agent = DDPG(obs_dict)
+    ddpg_agent.to(device=device)
     DURATION = 24*365*3
     rewards, episode_metrics = train_ddpg(agent=ddpg_agent, env = env, num_iterations=DURATION)
