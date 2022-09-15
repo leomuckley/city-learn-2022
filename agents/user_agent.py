@@ -1,5 +1,7 @@
+
 from agents.random_agent import RandomAgent
 from agents.rbc_agent import BasicRBCAgent
+from agents.sac_agent import SACAgent
 
 
 ###################################################################
@@ -7,4 +9,5 @@ from agents.rbc_agent import BasicRBCAgent
 ###################################################################
 
 #UserAgent = RandomAgent
-UserAgent = BasicRBCAgent
+#UserAgent = BasicRBCAgent
+UserAgent = SACAgent

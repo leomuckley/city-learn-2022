@@ -38,10 +38,10 @@ class OrderEnforcingAgent:
     def raise_aicrowd_error(self, msg):
         raise NameError(msg)
 
-    def compute_action(self, observation):
+    def compute_action(self, observations, reward, observations_, done):
         """Get observation return action"""
         assert self.num_buildings is not None
         actions = []
         for agent_id in range(self.num_buildings):
-            actions.append(self.agent.compute_action(observation[agent_id], agent_id))
+            actions.append(self.agent.compute_action(observations, reward, observations_, agent_id, done))
         return actions
