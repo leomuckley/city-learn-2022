@@ -102,7 +102,7 @@ class Agent():
         value_ = self.target_value(state_).view(-1)
         value_[done] = 0.0
 
-        actions, log_probs = self.actor.sample_normal(state, reparamterize=False)
+        actions, log_probs = self.actor.sample_normal(state, reparameterize=False)
         log_probs = log_probs.view(-1)
         q1_new_policy = self.critic_1.forward(state, actions)
         q2_new_policy = self.critic_2.forward(state, actions)
@@ -116,7 +116,7 @@ class Agent():
         self.value.optimizer.step()
 
 
-        actions, log_probs = self.actor.sample(state, reparameterize=True)
+        actions, log_probs = self.actor.sample_normal(state, reparameterize=True)
         log_probs = log_probs.view(-1)
         q1_new_policy = self.critic_1.forward(state, actions)
         q2_new_policy = self.critic_2.forward(state, actions)
@@ -132,7 +132,7 @@ class Agent():
 
         self.critic_1.optimizer.zero_grad()
         self.critic_2.optimizer.zero_grad()
-        q_hat = self.scale * reward + self.gamm*value_
+        q_hat = self.scale * reward + self.gamma*value_
         q1_old_policy = self.critic_1.forward(state, action).view(-1)
         q2_old_policy = self.critic_2.forward(state, action).view(-1)
         critic_1_loss = 0.5* F.mse_loss(q1_old_policy, q_hat)

@@ -38,7 +38,7 @@ class ReplayBuffer():
         rewards = self.reward_memory[batch]
         dones = self.terminal_memory[batch]
 
-        return states, actions, states_, dones
+        return states, actions, rewards, states_, dones
 
 
 
