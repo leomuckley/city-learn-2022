@@ -1,5 +1,5 @@
 from json import load
-import pybullet_envs
+#import pybullet_envs
 import gym
 import numpy as np
 import matplotlib.pyplot as plt
