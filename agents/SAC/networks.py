@@ -50,7 +50,7 @@ class CriticNetwork(nn.Module):
 
         self.optimizer = optim.Adam(self.parameters(), lr=beta)
         self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
-
+        print(f"Using {self.device} for training the SAC agent")
         self.to(self.device)
 
 
