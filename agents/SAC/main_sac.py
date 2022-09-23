@@ -14,7 +14,7 @@ from sac_torch import Agent
 #         return obs / 255.0
 
 if __name__ == "__main__":
-    env = gym.make('CartPoleContinuousBulletEnv-v0')
+    env = gym.make('MountainCarContinuous-v0')
     
     agent = Agent(input_dims=env.observation_space.shape, env=env, n_actions=env.action_space.shape[0])
     #print(env.observation_space)
@@ -33,6 +33,7 @@ if __name__ == "__main__":
         env.render(mode='human')
 
     for i in range(n_games):
+        print(f"Game No. {i}")
         observation = env.reset()
         done = False
         score = 0
@@ -44,6 +45,7 @@ if __name__ == "__main__":
             if not load_checkpoint:
                 agent.learn()
             observation = observation_
+            env.render()
         score_history.append(score)
         avg_score = np.mean(score_history[-100:])
 

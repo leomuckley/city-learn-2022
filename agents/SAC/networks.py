@@ -142,22 +142,35 @@ class ActorNetwork(nn.Module):
         self.sigma = nn.Linear(self.fc2_dims, self.n_actions)
 
         self.optimizer = optim.Adam(self.parameters(), lr=alpha)
-        self.device = T.device('cudea:0' if T.cuda.is_available() else 'cpu')
+        self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
 
         self.to(self.device)
 
 
     def forward(self, state):
-        prob = self.fc1(state.float())
+        prob = self.fc1(state)
+        # if T.any(T.isnan(prob)):
+        #     print(f"Prob is {prob}")
+        #     print(f"The state is {state} with shape {state.shape}")
+        #     print(f"The weights are {self.fc1.weight}")
+        #     print(f"The bias are {self.fc1.bias}")
         prob = F.relu(prob)
         prob = self.fc2(prob)
         prob = F.relu(prob)
 
+
         mu = self.mu(prob)
+        # if T.any(T.isnan(mu)):
+        #     print(f"Mu is {mu}")
+
         sigma = self.sigma(prob)
+        # if T.any(T.isnan(sigma)):
+        #     print(f"Sigma is {sigma}")
 
         sigma = T.clamp(sigma, min=self.reparam_noise, max=1) # Want std to constrained
-
+        #print('*******************************************')
+        #print(f"The mu is {mu} with shape {mu.shape}")
+        #print(f"The sigma is {sigma} with shape {sigma.shape}")
         return mu, sigma
 
     def sample_normal(self, state, reparameterize=True):

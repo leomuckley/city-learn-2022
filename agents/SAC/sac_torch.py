@@ -15,7 +15,7 @@ class Agent():
     # Reward scale is needed for entropy, may need experimentation
     # Tau ? used de-tuning
 
-    def __init__(self, alpha=0.0003, beta=0.0003, tau=0.005, input_dims=[8], env=None, gamma=0.99, n_actions=2, max_size=100000, layer1_size=256, layer_size=256, batch_size=256, reward_scale=2):
+    def __init__(self, alpha=0.03, beta=0.03, tau=0.005, input_dims=[8], env=None, gamma=0.99, n_actions=2, max_size=100000, layer1_size=256, layer_size=256, batch_size=256, reward_scale=2):
         self.gamma = gamma
         self.tau = tau
         self.memory = ReplayBuffer(max_size, input_dims, n_actions)
@@ -24,7 +24,7 @@ class Agent():
 
         # Networks
         self.actor = ActorNetwork(alpha, input_dims, n_actions=n_actions,
-            name='actor', max_action=1) # TODO: changed max to 1
+            name='actor', max_action=env.action_space.high) 
 
         self.critic_1 = CriticNetwork(beta, input_dims, n_actions, 
             name='critic_1')
@@ -98,6 +98,22 @@ class Agent():
         state = T.tensor(state, dtype=T.float).to(self.actor.device)
         action = T.tensor(action, dtype=T.float).to(self.actor.device)
 
+        # if T.any(T.isnan(reward)):
+        #     print(f"Reward is {reward}")
+
+        # if T.any(T.isnan(done)):
+        #     print(f"Done is {done}")
+
+        # if T.any(T.isnan(state)):
+        #     print(f"State is {state}")
+
+        # if T.any(T.isnan(state_)):
+        #     print(f"State_ is {state_}")
+
+        # if T.any(T.isnan(action)):
+        #     print(f"Action is {action}")
+
+            
         value = self.value(state).view(-1) # return tensor with one less dimension
         value_ = self.target_value(state_).view(-1)
         value_[done] = 0.0

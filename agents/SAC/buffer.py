@@ -24,6 +24,7 @@ class ReplayBuffer():
         self.terminal_memory[index] = done
 
         self.mem_cntr += 1
+        #print(f"Memory counter {self.mem_cntr}")
 
     
     def sample_buffer(self, batch_size):
@@ -37,6 +38,12 @@ class ReplayBuffer():
         actions = self.action_memory[batch]
         rewards = self.reward_memory[batch]
         dones = self.terminal_memory[batch]
+
+        # print(f"S : {states}")
+        # print(f"ac : {actions}")
+        # print(f"R : {rewards}")
+        # print(f"S_ : {states_}")
+        # print(f"D : {dones}")
 
         return states, actions, rewards, states_, dones
 
