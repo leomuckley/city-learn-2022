@@ -6,7 +6,7 @@ import itertools
 import matplotlib.pyplot as plt
 sys.path.append('./agents/SAC/')
 
-MODE = "TEST"
+MODE = ""#"TEST"
 
 """
 Please do not make changes to this file. 
@@ -132,17 +132,17 @@ def test_agent():
     agent = Agent(input_dims=env.observation_space.shape, env=env, n_actions=env.action_space.shape[0])
 
     # Number of steps you run the agent for 
-    num_steps = 3000
+    num_steps = 30000
     observation = env.reset()
     rewards = []
     for step in range(num_steps):
         
-        print(f"Step : {step}")
+        #print(f"Step : {step}")
         # take random action, but you can also do something more intelligent
         # TODO: below
         action = agent.choose_action(observation)
         #action1 = env.action_space.sample()
-        print(action)
+        #print(action)
         # print(action2)
         # assert type(action1) == type(action2), f"Action 1 is type {type(action1)} and Action 2 is type {type(action2)}"
 

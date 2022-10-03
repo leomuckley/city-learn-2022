@@ -5,13 +5,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sac_torch import Agent
 
-# class ObservationWrapper(gym.ObservationWrapper):
-#     def __init__(self, env):
-#         super().__init__(env)
+class ObservationWrapper(gym.ObservationWrapper):
+    def __init__(self, env):
+        super().__init__(env)
     
-#     def observation(self, obs):
-#         # Normalise observation by 255
-#         return obs / 255.0
+    def observation(self, obs):
+        # Normalise observation by 255
+        return obs / 255.0
+
 
 if __name__ == "__main__":
     env = gym.make('MountainCarContinuous-v0')
@@ -35,6 +36,7 @@ if __name__ == "__main__":
     for i in range(n_games):
         print(f"Game No. {i}")
         observation = env.reset()
+        print(observation)
         done = False
         score = 0
         while not done:

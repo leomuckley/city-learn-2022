@@ -15,7 +15,7 @@ class Agent():
     # Reward scale is needed for entropy, may need experimentation
     # Tau ? used de-tuning
 
-    def __init__(self, alpha=0.03, beta=0.03, tau=0.005, input_dims=[8], env=None, gamma=0.99, n_actions=2, max_size=100000, layer1_size=256, layer_size=256, batch_size=256, reward_scale=2):
+    def __init__(self, alpha=0.03, beta=0.03, tau=0.005, input_dims=[8], env=None, gamma=0.99, n_actions=2, max_size=100000, layer1_size=256, layer_size=256, batch_size=32, reward_scale=1):
         self.gamma = gamma
         self.tau = tau
         self.memory = ReplayBuffer(max_size, input_dims, n_actions)
@@ -35,7 +35,7 @@ class Agent():
         self.target_value = ValueNetwork(beta, input_dims, name='target_value')
 
         self.scale = reward_scale
-        self.update_network_parameters(tau=1)
+        self.update_network_parameters()
 
 
     def choose_action(self, observation):
