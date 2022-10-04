@@ -32,9 +32,22 @@ def env_reset(env):
     return obs_dict
 
 def evaluate():
-    print("Starting local evaluation")
     
+    print("Starting local evaluation...")
+    print(f"{'*'*100}")
+
     env = CityLearnEnv(schema=Constants.schema_path)
+
+    print(f"The number of agents in Env: {len(env.action_space)}")
+    print(f"{'*'*100}")
+    print(f"The Env action space: {env.action_space}")
+    print(f"{'*'*100}")
+    print(f"There are {len(env.action_space)} observation spaces with dims: {env.observation_space[0].shape}")
+    print(f"{'*'*100}")
+    print(f"The Env reward range: {env.reward_range}")
+    print(f"{'*'*100}")
+
+
     agent = OrderEnforcingAgent()
 
     obs_dict = env_reset(env)
