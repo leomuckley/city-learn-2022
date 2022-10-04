@@ -14,8 +14,22 @@ class ObservationWrapper(gym.ObservationWrapper):
         return obs / 255.0
 
 
+class NormalizedEnv(gym.ActionWrapper):
+    """ Wrap action """
+    def __init__(self, env):
+        super(NormalizedEnv, self).__init__(env)
+        self.env = env
+        # define action and observation space
+        self.action_space = gym.spaces.Box(low=np.array([-1]), high=np.array([1]), dtype=np.float32)
+
+    def action(self, act):
+        return act
+
+
 if __name__ == "__main__":
-    env = gym.make('MountainCarContinuous-v0')
+    env = NormalizedEnv(gym.make('Pendulum-v1'))
+
+    print(env.action_space)
     
     agent = Agent(input_dims=env.observation_space.shape, env=env, n_actions=env.action_space.shape[0])
     #print(env.observation_space)
@@ -25,7 +39,7 @@ if __name__ == "__main__":
 
     figure_file = 'plots/' + filename
 
-    best_score = env.reward_range[0]
+    best_score = max(env.reward_range)
     score_history = []
     load_checkpoint = False
 
@@ -41,7 +55,9 @@ if __name__ == "__main__":
         score = 0
         while not done:
             action = agent.choose_action(observation)
+
             observation_, reward, done, info = env.step(action)
+            
             score += reward
             agent.remember(observation, action, reward, observation_, done)
             if not load_checkpoint:

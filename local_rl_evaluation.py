@@ -32,7 +32,22 @@ index_particular = [20, 21, 22, 23]
 normalization_value_commun = [12, 24, 2, 100, 100, 1]
 normalization_value_particular = [5, 5, 5, 5]
 
-len_tot_index = len(index_commun) + len(index_particular) * 5
+#len_tot_index = len(index_commun) + len(index_particular) * 5
+
+len_tot_index = 28
+
+class NormalizedEnv(gym.ActionWrapper):
+    """ Wrap action """
+    def __init__(self, env):
+        super(NormalizedEnv, self).__init__(env)
+        self.env = env
+        # define action and observation space
+        self.action_space = gym.spaces.Box(low=np.array([-1]), high=np.array([1]), dtype=np.float32)
+
+    def action(self, act):
+        return act
+
+        
 
 ## Gym env wrapper for city learn env
 class EnvCityGym(gym.Env):
@@ -72,7 +87,7 @@ class EnvCityGym(gym.Env):
         """
         # FIXME: disabled below
         observation = obs
-        # # we get the observation commun for each building (index_commun)
+        # we get the observation commun for each building (index_commun)
         # observation_commun = [obs[0][i]/n for i, n in zip(index_commun, normalization_value_commun)]
         # observation_particular = [[o[i]/n for i, n in zip(index_particular, normalization_value_particular)] for o in obs]
 
@@ -124,6 +139,7 @@ def test_agent():
 
     import time 
     env = gym.make('MountainCarContinuous-v0')
+    env = NormalizedEnv(env)
     # Observation and action space 
     obs_space = env.observation_space
     action_space = env.action_space
@@ -201,6 +217,8 @@ def evaluate():
     try:
         while True:
             observation_, reward, done, info = env.step(action)
+            #print((len(observation), len(action), len(reward), len(observation_), done))
+            print(observation)
             agent.remember(observation, action, reward, observation_, done)
             rewards.append(reward)
             if done:
@@ -228,6 +246,8 @@ def evaluate():
 
                 if episodes_completed >= Constants.episodes:
                     break
+            env.render()
+
     except KeyboardInterrupt:
         print("========================= Stopping Evaluation =========================")
         interrupted = True
